@@ -1,0 +1,28 @@
+Loading module 'all'
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:469: The name tf.app.run is deprecated. Please use tf.compat.v1.app.run instead.
+
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:437: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
+
+W1024 07:31:24.690966 47610801800256 module_wrapper.py:139] From ../bert/create_pretraining_data.py:437: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
+
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:437: The name tf.logging.INFO is deprecated. Please use tf.compat.v1.logging.INFO instead.
+
+W1024 07:31:24.691230 47610801800256 module_wrapper.py:139] From ../bert/create_pretraining_data.py:437: The name tf.logging.INFO is deprecated. Please use tf.compat.v1.logging.INFO instead.
+
+WARNING:tensorflow:From /scratch/gi372/camel-mlm/bert/tokenization.py:125: The name tf.gfile.GFile is deprecated. Please use tf.io.gfile.GFile instead.
+
+W1024 07:31:24.691479 47610801800256 module_wrapper.py:139] From /scratch/gi372/camel-mlm/bert/tokenization.py:125: The name tf.gfile.GFile is deprecated. Please use tf.io.gfile.GFile instead.
+
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:444: The name tf.gfile.Glob is deprecated. Please use tf.io.gfile.glob instead.
+
+W1024 07:31:24.798528 47610801800256 module_wrapper.py:139] From ../bert/create_pretraining_data.py:444: The name tf.gfile.Glob is deprecated. Please use tf.io.gfile.glob instead.
+
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:446: The name tf.logging.info is deprecated. Please use tf.compat.v1.logging.info instead.
+
+W1024 07:31:24.807702 47610801800256 module_wrapper.py:139] From ../bert/create_pretraining_data.py:446: The name tf.logging.info is deprecated. Please use tf.compat.v1.logging.info instead.
+
+INFO:tensorflow:*** Reading from input files ***
+I1024 07:31:24.807877 47610801800256 create_pretraining_data.py:446] *** Reading from input files ***
+INFO:tensorflow:  ../corpora/shards/MSA-oscar-unshuffled.docs.shard.132.normalized.sents
+I1024 07:31:24.808003 47610801800256 create_pretraining_data.py:448]   ../corpora/shards/MSA-oscar-unshuffled.docs.shard.132.normalized.sents
+slurmstepd: *** JOB 2174101 ON compute-16-4 CANCELLED AT 2020-10-24T07:35:22 ***

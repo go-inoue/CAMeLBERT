@@ -20,7 +20,7 @@ gcloud config set project camelbert
 
 gcloud compute instances create camel-bert \
     --zone=europe-west4-a \
-    --machine-type=n1-standard-4 \
+    --machine-type=n1-standard-2 \
     --image-project=ml-images \
     --image-family=tf-1-15 \
     --scopes=cloud-platform \
@@ -66,6 +66,7 @@ gcloud compute tpus create camel-bert-5 \
 gcloud compute ssh camel-bert --zone=europe-west4-a
 
 git clone https://github.com/go-inoue/CAMeLBERT.git
+cd CAMeLBERT
 ```
 
 #### 4. Run pre-training with max sequence length of 128 tokens.

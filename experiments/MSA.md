@@ -321,7 +321,7 @@ nohup python bert/run_pretraining.py \
     --keep_checkpoint_max=5000 \
     --learning_rate=1e-4 \
     --use_tpu \
-    --tpu_name=camel-bert-5 \
+    --tpu_name=camel-bert-3 \
     --num_tpu_cores=8 \
 > experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-quarter-from-416000.out \
 2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-quarter-from-416000.err &

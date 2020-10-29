@@ -353,6 +353,7 @@ nohup python bert/run_pretraining.py \
     --num_tpu_cores=8 \
 > experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-417000.out \
 2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-417000.err &
+```
 
 #### 5. Run pre-training with max sequence length of 512 tokens.
 ```bash

@@ -244,6 +244,56 @@ for i in {0..1000000..100000}; do
 done
 ```
 
+#### Resume pre-training from a certain checkpoint due to the error occurred at 291000 for MSA-eighth, 322000 for MSA-sixteenth
+- MSA-eighth
+```bash
+# Resume pre-training from a specific checkpoint
+nohup python bert/run_pretraining.py \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-eighth/model.ckpt-291000 \
+    --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-128/MSA*eighth* \
+    --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-eighth \
+    --do_train=True \
+    --do_eval=True \
+    --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
+    --train_batch_size=1024 \
+    --max_seq_length=128 \
+    --max_predictions_per_seq=20 \
+    --num_train_steps=5000000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=1000 \
+    --keep_checkpoint_max=5000 \
+    --learning_rate=1e-4 \
+    --use_tpu \
+    --tpu_name=camel-bert-4 \
+    --num_tpu_cores=8 \
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-eighth-from-291000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-eighth-from-291000.err &
+```
+- MSA-sixteenth
+```bash
+# Resume pre-training from a specific checkpoint
+nohup python bert/run_pretraining.py \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-sixteenth/model.ckpt-322000 \
+    --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-128/MSA*sixteenth* \
+    --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-sixteenth \
+    --do_train=True \
+    --do_eval=True \
+    --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
+    --train_batch_size=1024 \
+    --max_seq_length=128 \
+    --max_predictions_per_seq=20 \
+    --num_train_steps=5000000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=1000 \
+    --keep_checkpoint_max=5000 \
+    --learning_rate=1e-4 \
+    --use_tpu \
+    --tpu_name=camel-bert-5 \
+    --num_tpu_cores=8 \
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-322000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-322000.err &
+```
+
 #### 5. Run pre-training with max sequence length of 512 tokens.
 ```bash
 # Make sure that the following hyperparameters are the same as the original paper.

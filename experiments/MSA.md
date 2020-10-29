@@ -244,7 +244,7 @@ for i in {0..1000000..100000}; do
 done
 ```
 
-#### Resume pre-training from a certain checkpoint due to the error occurred at 291000 for MSA-eighth, 322000 for MSA-sixteenth
+#### Resume pre-training from a certain checkpoint due to the error occurred at 291000 for MSA-eighth, 322000 for MSA-sixteenth, 417000 for MSA-quarter
 - MSA-eighth
 ```bash
 # Resume pre-training from a specific checkpoint
@@ -298,6 +298,33 @@ nohup python bert/run_pretraining.py \
     --num_tpu_cores=8 \
 > experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-321000.out \
 2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-321000.err &
+
+- MSA-quarter
+```bash
+# Resume pre-training from a specific checkpoint
+# The following script starts from 416000, not 417000 to make sure that the ckeckpoint does not have any issue.
+# Make sure to update the file named `checkpoint` accordingly.
+# Specifically, you need to update the number specified in the first line.
+nohup python bert/run_pretraining.py \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-quarter/model.ckpt-416000 \
+    --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-128/MSA*quarter* \
+    --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-quarter \
+    --do_train=True \
+    --do_eval=True \
+    --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
+    --train_batch_size=1024 \
+    --max_seq_length=128 \
+    --max_predictions_per_seq=20 \
+    --num_train_steps=5000000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=1000 \
+    --keep_checkpoint_max=5000 \
+    --learning_rate=1e-4 \
+    --use_tpu \
+    --tpu_name=camel-bert-5 \
+    --num_tpu_cores=8 \
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-quarter-from-416000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-quarter-from-416000.err &
 ```
 
 #### 5. Run pre-training with max sequence length of 512 tokens.

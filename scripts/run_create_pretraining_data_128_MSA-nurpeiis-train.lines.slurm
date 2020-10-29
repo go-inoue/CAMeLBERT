@@ -7,8 +7,8 @@
 #SBATCH --job-name=prepare_tf_data_128
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=gi372@nyu.edu
-#SBATCH --output=output-run_create_pretraining_128_MSA-nurpeiis-train.lines.shards.%a-%A.out
-#SBATCH --error=output-run_create_pretraining_128_MSA-nurpeiis-train.lines.shards.%a-%A.err
+#SBATCH --output=output-run_create_pretraining_128_MSA-nurpeiis-train.lines.shard.%a-%A.out
+#SBATCH --error=output-run_create_pretraining_128_MSA-nurpeiis-train.lines.shard.%a-%A.err
 
 
 module purge
@@ -27,7 +27,7 @@ echo $OUTPUT
 python ../bert/create_pretraining_data.py \
 --input_file=$INPUT \
 --output_file=$OUTPUT \
---vocab_file=../model/bert-wordpiece-30k-vocab.txt \
+--vocab_file=../configs/bert-wordpiece-30k-vocab.txt \
 --do_lower_case=False \
 --do_whole_word_mask=True \
 --max_seq_length=128 \

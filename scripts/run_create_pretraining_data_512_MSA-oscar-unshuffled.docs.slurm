@@ -27,7 +27,7 @@ echo $OUTPUT
 python ../bert/create_pretraining_data.py \
 --input_file=$INPUT \
 --output_file=$OUTPUT \
---vocab_file=../model/bert-wordpiece-30k-vocab.txt \
+--vocab_file=../configs/bert-wordpiece-30k-vocab.txt \
 --do_lower_case=False \
 --do_whole_word_mask=True \
 --max_seq_length=512 \

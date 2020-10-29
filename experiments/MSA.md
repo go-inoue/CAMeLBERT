@@ -248,8 +248,11 @@ done
 - MSA-eighth
 ```bash
 # Resume pre-training from a specific checkpoint
+# The following script starts from 290000, not 291000 to make sure that the ckeckpoint does not have any issue.
+# Make sure to update the file named `checkpoint` accordingly.
+# Specifically, you need to update the number specified in the first line.
 nohup python bert/run_pretraining.py \
-    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-eighth/model.ckpt-291000 \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-eighth/model.ckpt-290000 \
     --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-128/MSA*eighth* \
     --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-eighth \
     --do_train=True \
@@ -266,14 +269,17 @@ nohup python bert/run_pretraining.py \
     --use_tpu \
     --tpu_name=camel-bert-4 \
     --num_tpu_cores=8 \
-> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-eighth-from-291000.out \
-2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-eighth-from-291000.err &
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-eighth-from-290000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-eighth-from-290000.err &
 ```
 - MSA-sixteenth
 ```bash
 # Resume pre-training from a specific checkpoint
+# The following script starts from 321000, not 322000 to make sure that the ckeckpoint does not have any issue.
+# Make sure to update the file named `checkpoint` accordingly.
+# Specifically, you need to update the number specified in the first line.
 nohup python bert/run_pretraining.py \
-    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-sixteenth/model.ckpt-322000 \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-sixteenth/model.ckpt-321000 \
     --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-128/MSA*sixteenth* \
     --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-sixteenth \
     --do_train=True \
@@ -290,8 +296,8 @@ nohup python bert/run_pretraining.py \
     --use_tpu \
     --tpu_name=camel-bert-5 \
     --num_tpu_cores=8 \
-> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-322000.out \
-2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-322000.err &
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-321000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-sixteenth-from-321000.err &
 ```
 
 #### 5. Run pre-training with max sequence length of 512 tokens.

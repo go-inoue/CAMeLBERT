@@ -1,0 +1,2 @@
+../corpora/shards/MSA-arabic-gigaword-fifth.docs.shard.006.normalized.sents
+../corpora/tfrecord_wp-30k_msl-512/MSA-arabic-gigaword-fifth.docs.shard.006.tf_record

@@ -1,0 +1,2 @@
+../corpora/shards/MSA-oscar-unshuffled.docs.shard.085.normalized.sents
+../corpora/tfrecord_wp-30k_msl-512/MSA-oscar-unshuffled.docs.shard.085.tf_record

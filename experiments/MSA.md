@@ -383,7 +383,64 @@ nohup python bert/run_pretraining.py \
 2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-quarter-from-427000.err &
 ```
 
+- MSA-eighth, from 952000
+```bash
+# Resume pre-training from a specific checkpoint
+# The following script starts from 952000, not 291000 to make sure that the ckeckpoint does not have any issue.
+# Make sure to update the file named `checkpoint` accordingly.
+# Specifically, you need to update the number specified in the first line.
+nohup python bert/run_pretraining.py \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-eighth/model.ckpt-952000 \
+    --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-128/MSA*eighth* \
+    --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-eighth \
+    --do_train=True \
+    --do_eval=True \
+    --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
+    --train_batch_size=1024 \
+    --max_seq_length=128 \
+    --max_predictions_per_seq=20 \
+    --num_train_steps=1000000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=1000 \
+    --keep_checkpoint_max=5000 \
+    --learning_rate=1e-4 \
+    --use_tpu \
+    --tpu_name=camel-bert-4 \
+    --num_tpu_cores=8 \
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-eighth-from-952000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-128-MSA-eighth-from-952000.err &
+```
+
 #### 5. Run pre-training with max sequence length of 512 tokens.
+- Copy starting model checkpoints and update chekcpoint file
+
+```bash
+gsutil cp gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-full/model.ckpt-900000.* \
+gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-full/
+
+gsutil cp gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-half/model.ckpt-900000.* \
+gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-half/
+
+gsutil cp gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-quarter/model.ckpt-900000.* \
+gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-quarter/
+
+gsutil cp gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-eighth/model.ckpt-900000.* \
+gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-eighth/
+
+gsutil cp gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-sixteenth/model.ckpt-900000.* \
+gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-sixteenth/
+
+echo model_checkpoint_path: "model.ckpt-900000" > ./checkpoint
+echo all_model_checkpoint_paths: "model.ckpt-900000" >> ./checkpoint
+
+gsutil cp ./checkpoint gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-full/
+gsutil cp ./checkpoint gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-half/
+gsutil cp ./checkpoint gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-quarter/
+gsutil cp ./checkpoint gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-eighth/
+gsutil cp ./checkpoint gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-sixteenth/
+```
+
+- MSA-full
 ```bash
 # Make sure that the following hyperparameters are the same as the original paper.
 # The number of tokens in a batch is 131,072. This number stays the same across different max length.
@@ -395,14 +452,14 @@ nohup python bert/run_pretraining.py \
 nohup python bert/run_pretraining.py \
     --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-512/MSA* \
     --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-full \
-    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-full/model.ckpt-900000 \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-full/model.ckpt-900000 \
     --do_train=True \
     --do_eval=True \
     --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
     --train_batch_size=256 \
     --max_seq_length=512 \
     --max_predictions_per_seq=80 \
-    --num_train_steps=5000000 \
+    --num_train_steps=1000000 \
     --num_warmup_steps=10000 \
     --save_checkpoints_steps=1000 \
     --keep_checkpoint_max=1000 \
@@ -410,6 +467,106 @@ nohup python bert/run_pretraining.py \
     --use_tpu \
     --tpu_name=camel-bert-1 \
     --num_tpu_cores=8 \
-> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-full.out \
-2> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-full.err &
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-full-from-900000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-full-from-900000.err &
+```
+
+- MSA-half
+```bash
+# Run pre-training on background
+nohup python bert/run_pretraining.py \
+    --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-512/MSA*half* \
+    --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-half \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-half/model.ckpt-900000 \
+    --do_train=True \
+    --do_eval=True \
+    --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
+    --train_batch_size=256 \
+    --max_seq_length=512 \
+    --max_predictions_per_seq=80 \
+    --num_train_steps=1000000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=1000 \
+    --keep_checkpoint_max=1000 \
+    --learning_rate=1e-4 \
+    --use_tpu \
+    --tpu_name=camel-bert-2 \
+    --num_tpu_cores=8 \
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-half-from-900000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-half-from-900000.err &
+```
+
+- MSA-quarter
+```bash
+# Run pre-training on background
+nohup python bert/run_pretraining.py \
+    --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-512/MSA*quarter* \
+    --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-quarter \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-quarter/model.ckpt-900000 \
+    --do_train=True \
+    --do_eval=True \
+    --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
+    --train_batch_size=256 \
+    --max_seq_length=512 \
+    --max_predictions_per_seq=80 \
+    --num_train_steps=1000000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=1000 \
+    --keep_checkpoint_max=1000 \
+    --learning_rate=1e-4 \
+    --use_tpu \
+    --tpu_name=camel-bert-3 \
+    --num_tpu_cores=8 \
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-quarter-from-900000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-quarter-from-900000.err &
+```
+
+- MSA-eighth
+```bash
+# Run pre-training on background
+nohup python bert/run_pretraining.py \
+    --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-512/MSA*eighth* \
+    --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-eighth \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-eighth/model.ckpt-900000 \
+    --do_train=True \
+    --do_eval=True \
+    --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
+    --train_batch_size=256 \
+    --max_seq_length=512 \
+    --max_predictions_per_seq=80 \
+    --num_train_steps=1000000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=1000 \
+    --keep_checkpoint_max=1000 \
+    --learning_rate=1e-4 \
+    --use_tpu \
+    --tpu_name=camel-bert-4 \
+    --num_tpu_cores=8 \
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-eighth-from-900000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-eighth-from-900000.err &
+```
+
+- MSA-sixteenth
+```bash
+# Run pre-training on background
+nohup python bert/run_pretraining.py \
+    --input_file=gs://camelbert/data/tfrecord_wp-30k_msl-512/MSA*sixteenth* \
+    --output_dir=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-sixteenth \
+    --init_checkpoint=gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-sixteenth/model.ckpt-900000 \
+    --do_train=True \
+    --do_eval=True \
+    --bert_config_file=$HOME/CAMeLBERT/configs/bert-base-config.json \
+    --train_batch_size=256 \
+    --max_seq_length=512 \
+    --max_predictions_per_seq=80 \
+    --num_train_steps=1000000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=1000 \
+    --keep_checkpoint_max=1000 \
+    --learning_rate=1e-4 \
+    --use_tpu \
+    --tpu_name=camel-bert-5 \
+    --num_tpu_cores=8 \
+> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-sixteenth-from-900000.out \
+2> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-sixteenth-from-900000.err &
 ```

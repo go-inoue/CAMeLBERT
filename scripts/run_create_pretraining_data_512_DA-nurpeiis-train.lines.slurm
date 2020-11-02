@@ -19,7 +19,7 @@ source activate camelbert
 N=${SLURM_ARRAY_TASK_ID}
 
 INPUT=../corpora/shards/DA-nurpeiis-train.lines.shard.$(printf "%03d" ${N}).normalized.sents
-OUTPUT=../corpora/tf_records/DA-nurpeiis-train.lines.shard.$(printf "%03d" ${N}).tf_record
+OUTPUT=../corpora/tfrecord_wp-30k_msl-512/DA-nurpeiis-train.lines.shard.$(printf "%03d" ${N}).tf_record
 
 echo $INPUT
 echo $OUTPUT

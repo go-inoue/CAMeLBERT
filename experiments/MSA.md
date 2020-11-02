@@ -6,6 +6,19 @@
 
 ## Pre-training BERT on Google Cloud Platform
 ### Data Preparation
+
+### Upload files to Google Cloud Storage
+- `camelbert/data/tfrecord_wp-30k_msl-128`
+   - First file: `MSA-abuelkhail.docs.shard.000.tf_record`
+     - Created time: `Oct 27, 2020, 4:34:37 AM`
+   - Last file: `MSA-osian.lines.shard.023.tf_record`
+     - Created time: `Oct 27, 2020, 8:44:54 AM`
+- `camelbert/data/tfrecord_wp-30k_msl-512`
+   - First file: `MSA-abuelkhail.docs.shard.000.tf_record`
+     - Created time: `Nov 1, 2020, 11:00:19 PM`
+   - Last file: `MSA-osian.lines.shard.023.tf_record`
+     - Created time: `Nov 2, 2020, 7:01:05 AM`
+
 - 
 ### Set up VMs on Google Cloud Platform
 - We use `n1-standard-2` for running the pre-training script.
@@ -569,4 +582,100 @@ nohup python bert/run_pretraining.py \
     --num_tpu_cores=8 \
 > experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-sixteenth-from-900000.out \
 2> experiments/output-run_pretraining_bert-base-wp-30k_msl-512-MSA-sixteenth-from-900000.err &
+```
+
+
+```bash
+# Create a VM instance
+gcloud compute instances create gcs-vm-gdrive-2 \
+    --zone=europe-west4-a \
+    --machine-type=f1-micro \
+    --scopes=cloud-platform \
+    --no-address
+
+# ssh into the VM instnace
+gcloud compute ssh gcs-vm-gdrive-2 --zone=europe-west4-a
+
+# Install unzip for rclone installation
+sudo apt install unzip htop
+
+# Install rclone for uploading files to Google Drive
+curl https://rclone.org/install.sh | sudo bash
+
+# Configure rclone
+rclone config
+
+# Make temporary directories for moving files
+mkdir full half quarter eighth sixteenth
+
+
+for i in {401000..500000..1000}; do
+  for s in full half quarter eighth sixteenth; do
+  gsutil -o "GSUtil:parallel_thread_count=1" \
+  -o "GSUtil:sliced_object_download_max_components=8" \
+  mv gs://camelbert/model/bert-base-wp-30k_msl-128-MSA-$s/model.ckpt-$i.* $s/
+  #sleep 1
+  rclone move $s/model.ckpt-$i.index gdrive:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-$s/ --verbose
+  #sleep 1
+  rclone move $s/model.ckpt-$i.meta gdrive:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-$s/ --verbose
+  #sleep 1
+  rclone move $s/model.ckpt-$i.data-00000-of-00001 gdrive:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-$s/ --drive-chunk-size 128M --verbose
+  for f in `ls $s`; do
+    sleep 1
+    rclone move $s/$f gdrive:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-$s/ --verbose
+  done
+  done
+done
+```
+
+```bash
+for s in full half quarter eighth sixteenth; do
+  gsutil -o "GSUtil:parallel_thread_count=1" \
+  -o "GSUtil:sliced_object_download_max_components=8" \
+  mv gs://camelbert/model/bert-base-wp-30k_msl-512-MSA-$s/model.ckpt-1000000.* $s/
+  #sleep 1
+  rclone move $s/model.ckpt-1000000.index gdrive:CAMeLBERT/model/bert-base-wp-30k_msl-512-MSA-$s/ --verbose
+  #sleep 1
+  rclone move $s/model.ckpt-1000000.meta gdrive:CAMeLBERT/model/bert-base-wp-30k_msl-512-MSA-$s/ --verbose
+  #sleep 1
+  rclone move $s/model.ckpt-1000000.data-00000-of-00001 gdrive:CAMeLBERT/model/bert-base-wp-30k_msl-512-MSA-$s/ --drive-chunk-size 256M --verbose
+done
+```
+
+
+## Converting tf checkpoint to torch chekcpoint
+### Set up environment
+```bash
+# version 1.5.1
+module purge
+module load all
+module load cuda/9.2
+
+conda create -n torch_1.5.1-transformers_3.1.0 python=3.6
+conda activate torch_1.5.1-transformers_3.1.0
+conda install pytorch==1.5.1 cudatoolkit=9.2 -c pytorch
+pip install tensorflow==1.15 transformers==3.1.0 camel_tools seqeval==0.0.12 scikit-learn==0.21.3
+```
+
+### Download tf checkpoint
+```bash
+mkdir bert-base-wp-30k_msl-128-MSA-full-1000000-step
+rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-full/model.ckpt-1000000.index bert-base-wp-30k_msl-128-MSA-full-1000000-step/
+rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-full/model.ckpt-1000000.meta bert-base-wp-30k_msl-128-MSA-full-1000000-step/
+rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-full/model.ckpt-1000000.data-00000-of-00001 bert-base-wp-30k_msl-128-MSA-full-1000000-step/
+
+transformers-cli convert --model_type bert \
+  --tf_checkpoint bert-base-wp-30k_msl-128-MSA-full-1000000-step/model.ckpt-1000000 \
+  --config ../../configs/bert-base-config.json \
+  --pytorch_dump_output bert-base-wp-30k_msl-128-MSA-full-1000000-step/pytorch_model.bin
+
+cp ../../configs/bert-base-config.json bert-base-wp-30k_msl-128-MSA-full-1000000-step/config.json
+cp ../../configs/bert-wordpiece-30k-vocab.txt bert-base-wp-30k_msl-128-MSA-full-1000000-step/vocab.txt
+```
+
+```bash
+transformers-cli convert --model_type bert \
+  --tf_checkpoint bert-base-wp-30k_msl-512-MSA-full-1000000-step/model.ckpt-1000000 \
+  --config ../../configs/bert-base-config.json \
+  --pytorch_dump_output bert-base-wp-30k_msl-512-MSA-full-1000000-step/pytorch_model.bin
 ```

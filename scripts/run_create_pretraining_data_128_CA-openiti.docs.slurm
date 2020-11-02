@@ -19,7 +19,7 @@ source activate camelbert
 N=${SLURM_ARRAY_TASK_ID}
 
 INPUT=../corpora/shards/CA-openiti.docs.shard.$(printf "%03d" ${N}).normalized.sents
-OUTPUT=../corpora/tf_records/CA-openiti.docs.shard.$(printf "%03d" ${N}).tf_record
+OUTPUT=../corpora/tfrecord_wp-30k_msl-128/CA-openiti.docs.shard.$(printf "%03d" ${N}).tf_record
 
 echo $INPUT
 echo $OUTPUT
@@ -37,4 +37,4 @@ python ../bert/create_pretraining_data.py \
 --masked_lm_prob=0.15 \
 --short_seq_prob=0.1
 
-# sbatch -p condo --array=[0-42] run_create_pretraining_data_128_CA-openiti.docs.slurm
+# sbatch -p serial --array=[0-42] run_create_pretraining_data_128_CA-openiti.docs.slurm

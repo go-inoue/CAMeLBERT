@@ -2,9 +2,30 @@
 
 ## Data
 - Abu El-Khair Corpus [[paper](https://arxiv.org/pdf/1611.04033.pdf)]
-- 
+- Wikipedia (2019-0201)
+- Arabic Gigaword Fifth Edition
+- OSCAR (unshuffled)
+- OSIAN
+- MSA labeled samples in data collected by Nurpeiis Baimukan for dialectal identification task
+
+### Preprocessing
+- Remove non-printing characters.
+- Remove lines without any Arabic characters.
+- Remove diacritics and kashida.
+- Heuristic sentence split.
 
 ## Pre-training BERT on Google Cloud Platform
+### Notes and tips on Google Cloud Platform
+- You have $300 free credit for 12 months upon registration.
+- You may be eligible for TensorFlow Research Cloud (TFRC) Program, which allows free access to five on-demand v3-8 TPUs, five on-demand v2-8 TPUs, and 100 preemptible Cloud TPU v2-8 for one month.
+- You may get extended access to TPUs once your trial period has ended, if you have a compelling reason to do so.
+- You will not be charged as long as you are using a normal account, however, to use TPUs, you need to make your account billable. This means that you will be charged for the usage that exceeds $300 credit.
+- Google Cloud Console has a usage limit of 50 hours per week.
+- Make sure to set up your TPU instance, VM instance, and Cloud Storage bucket in the same region.
+- Make sure to set up Cloud NAT, otherwise, your VM instance will not have access to Internet.
+- To move files from Google Cloud Storage to Google Drive, the cheapest way is to set up a small VM instance, and download files from Google Cloud Storage to the instance, and then upload the files from the instance to Google Drive. There will be no charge.
+- The most expensive component in pre-training a BERT model is data storage in Google Cloud Storage.
+
 ### Data Preparation
 
 ### Upload files to Google Cloud Storage
@@ -659,23 +680,27 @@ pip install tensorflow==1.15 transformers==3.1.0 camel_tools seqeval==0.0.12 sci
 
 ### Download tf checkpoint
 ```bash
-mkdir bert-base-wp-30k_msl-128-MSA-full-1000000-step
-rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-full/model.ckpt-1000000.index bert-base-wp-30k_msl-128-MSA-full-1000000-step/
-rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-full/model.ckpt-1000000.meta bert-base-wp-30k_msl-128-MSA-full-1000000-step/
-rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-128-MSA-full/model.ckpt-1000000.data-00000-of-00001 bert-base-wp-30k_msl-128-MSA-full-1000000-step/
+for split in full half quarter eighth sixteenth; do
+    # Create a directory
+    mkdir -p bert-base-wp-30k_msl-512-MSA-$split-1000000-step
 
-transformers-cli convert --model_type bert \
-  --tf_checkpoint bert-base-wp-30k_msl-128-MSA-full-1000000-step/model.ckpt-1000000 \
-  --config ../../configs/bert-base-config.json \
-  --pytorch_dump_output bert-base-wp-30k_msl-128-MSA-full-1000000-step/pytorch_model.bin
+    # Download checkpoint files from Google Drive
+    rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-512-MSA-$split/model.ckpt-1000000.index bert-base-wp-30k_msl-512-MSA-$split-1000000-step/
+    rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-512-MSA-$split/model.ckpt-1000000.meta bert-base-wp-30k_msl-512-MSA-$split-1000000-step/
+    rclone copy google:CAMeLBERT/model/bert-base-wp-30k_msl-512-MSA-$split/model.ckpt-1000000.data-00000-of-00001 bert-base-wp-30k_msl-512-MSA-$split-1000000-step/
 
-cp ../../configs/bert-base-config.json bert-base-wp-30k_msl-128-MSA-full-1000000-step/config.json
-cp ../../configs/bert-wordpiece-30k-vocab.txt bert-base-wp-30k_msl-128-MSA-full-1000000-step/vocab.txt
+    # Copy config files
+    cp ../../configs/bert-base-config.json bert-base-wp-30k_msl-512-MSA-$split-1000000-step/config.json
+    cp ../../configs/bert-wordpiece-30k-vocab.txt bert-base-wp-30k_msl-512-MSA-$split-1000000-step/vocab.txt
+done
 ```
 
+### Convert tf checkpoint to pytorch checkpoint 
 ```bash
+for split in full half quarter eighth sixteenth; do
 transformers-cli convert --model_type bert \
-  --tf_checkpoint bert-base-wp-30k_msl-512-MSA-full-1000000-step/model.ckpt-1000000 \
+  --tf_checkpoint bert-base-wp-30k_msl-512-MSA-$split-1000000-step/model.ckpt-1000000 \
   --config ../../configs/bert-base-config.json \
-  --pytorch_dump_output bert-base-wp-30k_msl-512-MSA-full-1000000-step/pytorch_model.bin
+  --pytorch_dump_output bert-base-wp-30k_msl-512-MSA-$split-1000000-step/pytorch_model.bin
+done
 ```

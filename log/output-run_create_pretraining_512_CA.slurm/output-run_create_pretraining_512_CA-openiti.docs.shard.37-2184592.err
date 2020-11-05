@@ -1,0 +1,29 @@
+Loading module 'all'
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:469: The name tf.app.run is deprecated. Please use tf.compat.v1.app.run instead.
+
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:437: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
+
+W1103 23:09:40.997774 47157307110464 module_wrapper.py:139] From ../bert/create_pretraining_data.py:437: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
+
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:437: The name tf.logging.INFO is deprecated. Please use tf.compat.v1.logging.INFO instead.
+
+W1103 23:09:40.998109 47157307110464 module_wrapper.py:139] From ../bert/create_pretraining_data.py:437: The name tf.logging.INFO is deprecated. Please use tf.compat.v1.logging.INFO instead.
+
+WARNING:tensorflow:From /scratch/gi372/CAMeLBERT/bert/tokenization.py:125: The name tf.gfile.GFile is deprecated. Please use tf.io.gfile.GFile instead.
+
+W1103 23:09:40.998438 47157307110464 module_wrapper.py:139] From /scratch/gi372/CAMeLBERT/bert/tokenization.py:125: The name tf.gfile.GFile is deprecated. Please use tf.io.gfile.GFile instead.
+
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:444: The name tf.gfile.Glob is deprecated. Please use tf.io.gfile.glob instead.
+
+W1103 23:09:41.243732 47157307110464 module_wrapper.py:139] From ../bert/create_pretraining_data.py:444: The name tf.gfile.Glob is deprecated. Please use tf.io.gfile.glob instead.
+
+WARNING:tensorflow:From ../bert/create_pretraining_data.py:446: The name tf.logging.info is deprecated. Please use tf.compat.v1.logging.info instead.
+
+W1103 23:09:41.336786 47157307110464 module_wrapper.py:139] From ../bert/create_pretraining_data.py:446: The name tf.logging.info is deprecated. Please use tf.compat.v1.logging.info instead.
+
+INFO:tensorflow:*** Reading from input files ***
+I1103 23:09:41.337018 47157307110464 create_pretraining_data.py:446] *** Reading from input files ***
+INFO:tensorflow:  ../corpora/shards/CA-openiti.docs.shard.037.normalized.sents
+I1103 23:09:41.337176 47157307110464 create_pretraining_data.py:448]   ../corpora/shards/CA-openiti.docs.shard.037.normalized.sents
+/var/spool/slurmd/job2184688/slurm_script: line 38:  3296 Killed                  python ../bert/create_pretraining_data.py --input_file=$INPUT --output_file=$OUTPUT --vocab_file=../configs/bert-wordpiece-30k-vocab.txt --do_lower_case=False --do_whole_word_mask=True --max_seq_length=512 --max_predictions_per_seq=80 --random_seed=12345 --dupe_factor=10 --masked_lm_prob=0.15 --short_seq_prob=0.1
+slurmstepd: Exceeded step memory limit at some point.

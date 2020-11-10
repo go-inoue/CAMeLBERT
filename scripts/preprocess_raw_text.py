@@ -13,7 +13,7 @@ def main():
         for line in f.readlines():
             if line == '\n':
                 sys.stdout.write('\n')
-            else
+            else:
                 cleaned = _clean_text(line)
                 filtered = _filter_non_arabic_text(cleaned)
                 if filtered is not None:
